@@ -1,6 +1,7 @@
 # Sistema Bancário POO com Decoradores, Iteradores e Geradores
-Implementação de um sistema bancário simples em Python, utilizando conceitos de Programação Orientada a Objetos (POO), decoradores, iteradores e geradores. 
+Refatoração do sistema bancário utilizando conceitos de Programação Orientada a Objetos (POO), decoradores, iteradores e geradores. 
 O sistema permite criar clientes, contas bancárias, realizar depósitos e saques, visualizar extratos e saldos, além de gerar relatórios de transações.
+Para essa nova versão foi adicianado um limite de 3 transações diárias para cada cliente!
 
 ## Funcionalidades
 Criação de Clientes: Cadastro de clientes com nome, CPF, data de nascimento e endereço.
