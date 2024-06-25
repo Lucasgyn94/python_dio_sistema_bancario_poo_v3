@@ -3,13 +3,41 @@ from controllers.cliente_controller import ClienteController
 from controllers.conta_controller import ContaController
 from views.menu_view import MenuView
 from models.conta_iterador import ContaIterador
+from datetime import datetime
+from pathlib import Path
 
+ROOT_PATH = Path(__file__).parent
 
+    
+def log_transacao(funcao):
+    def envelope(*args, **kwargs):
+        resultado = funcao(*args, **kwargs)
+        data_hora = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+
+        # Formatar os argumentos de forma legível
+        argumentos_formatados = []
+        for arg in args:
+            if isinstance(arg, (ClienteController, ContaController, MenuView)):
+                argumentos_formatados.append(arg.__class__.__name__)  # Nome da classe
+            else:
+                argumentos_formatados.append(str(arg))  # Valor do argumento
+
+        # Gravar no arquivo de log
+        with open(ROOT_PATH / "log.txt", "a") as arquivo:
+            arquivo.write(
+                f"[{data_hora}] Função '{funcao.__name__}' executada com argumentos {argumentos_formatados} e {kwargs}. Retornou {resultado}\n"
+            )
+
+        return resultado
+    return envelope
+
+@log_transacao
 def criar_cliente(cliente_controller, menu_view):
     nome, cpf, data_nascimento, endereco = menu_view.obter_dados_cliente()
     cliente_controller.criar_cliente(nome, cpf, data_nascimento, endereco)
     print("Cliente criado com sucesso!")
 
+@log_transacao
 def criar_conta(cliente_controller, conta_controller, menu_view):
     cpf = menu_view.obter_cpf()
     cliente = cliente_controller.buscar_cliente_por_cpf(cpf)
@@ -57,6 +85,7 @@ def listar_clientes(cliente_controller):
     for cliente in clientes:
         print(f"Nome: {cliente.nome}, CPF: {cliente.cpf}, Endereço: {cliente.endereco}")
 
+@log_transacao
 def realizar_deposito(cliente_controller, conta_controller, menu_view):
     cpf = menu_view.obter_cpf()
     cliente = cliente_controller.buscar_cliente_por_cpf(cpf)
@@ -79,7 +108,7 @@ def realizar_deposito(cliente_controller, conta_controller, menu_view):
     else:
         print("Não foi possível realizar o depósito.")
 
-
+@log_transacao
 def realizar_saque(cliente_controller, conta_controller, menu_view):
     cpf = menu_view.obter_cpf()
     cliente = cliente_controller.buscar_cliente_por_cpf(cpf)

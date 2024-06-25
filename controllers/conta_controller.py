@@ -4,14 +4,6 @@ from models.cliente import Cliente
 from models.deposito import Deposito
 from models.saque import Saque
 
-def decorador_log(tipo_transacao):
-    def decorator(funcao):
-        def empacotador(*args, **kwargs):
-            data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-            print(f"Transação: {tipo_transacao} - Data: {data_hora}")
-            return funcao(*args, **kwargs)
-        return empacotador
-    return decorator
 
 
 class ContaController:
@@ -19,7 +11,6 @@ class ContaController:
     def __init__(self):
         self.numero_conta = 0
 
-    @decorador_log(tipo_transacao="Criação de Conta")
     def criar_conta(self, cliente):
         self.numero_conta += 1
         numero_conta = str(self.numero_conta).zfill(4)  

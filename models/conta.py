@@ -1,16 +1,6 @@
 from models.historico import Historico
 from datetime import datetime
 
-def decorador_log(tipo_transacao):
-    def decorator(funcao):
-        def empacotador(*args, **kwargs):
-            data_hora = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-            print(f"Transação: {tipo_transacao} - Data: {data_hora}")
-            return funcao(*args, **kwargs)
-        return empacotador
-    return decorator
-
-
 class Conta:
     def __init__(self, cliente, numero_conta, agencia):
         self.__saldo = 0
@@ -38,14 +28,12 @@ class Conta:
     def historico(self):
         return self.__historico
 
-    @decorador_log(tipo_transacao="Deposito")
     def depositar(self, valor):
         if valor > 0:
             self.__saldo += valor
             return True
         return False
     
-    @decorador_log(tipo_transacao="Saque")
     def sacar(self, valor):
         saldo = self.__saldo
         excedeu_saldo = valor > saldo
